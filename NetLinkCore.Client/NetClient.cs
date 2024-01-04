@@ -9,12 +9,10 @@ namespace NetLinkCore.Client
         private readonly NetConfig _config;
         private readonly object _lock = new();
         private readonly TcpClient _client = new();
-        private readonly IPAddress _hostAddress;
 
-        public NetClient(NetConfig config, string connectionIp)
+        public NetClient(NetConfig config)
         {
             this._config = config;
-            this._hostAddress = IPAddress.Parse(connectionIp);
         }
 
         /// <summary>
@@ -31,7 +29,7 @@ namespace NetLinkCore.Client
             _client.ReceiveBufferSize = _config.BufferSize;
 
             // actually connect
-            await _client.ConnectAsync(_hostAddress, _config.Port);
+            await _client.ConnectAsync(_config.Ip, _config.Port);
         }
 
         /// <summary>
@@ -50,6 +48,11 @@ namespace NetLinkCore.Client
             {
                 return false;
             }
+        }
+
+        public bool Connected()
+        {
+            return _client.Connected;
         }
 
         /// <summary>

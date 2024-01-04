@@ -14,7 +14,7 @@ namespace NetLinkCore.Common
     public class NetConfig
     {
         /// <summary>
-        /// How long the server/client wait when sending and receiving before considering
+        /// How long the server/client will wait when sending and receiving before considering
         /// the connection to have failed/disconnected
         /// </summary>
         public int TimeoutMs { get; set; } = 30000;
@@ -23,6 +23,11 @@ namespace NetLinkCore.Common
         /// How big the buffer is for both send and receive in bytes.
         /// </summary>
         public int BufferSize { get; set; } = 4096;
+
+        /// <summary>
+        /// The IP the server will listen on and the client will connect to
+        /// </summary>
+        public string Ip { get; set; } = "127.0.0.1";
 
         /// <summary>
         /// The port the server will listen on and the client will connect to
