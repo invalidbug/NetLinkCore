@@ -4,11 +4,11 @@ namespace NetLinkCore.Client
 {
     public class NetClient : INetConnection
     {
-        private readonly NetConfig config;
+        private readonly NetConfig _config;
 
         public NetClient(NetConfig config)
         {
-            this.config = config;
+            this._config = config;
         }
 
 

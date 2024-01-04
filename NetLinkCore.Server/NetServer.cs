@@ -4,14 +4,18 @@ namespace NetLinkCore.Server
 {
     public class NetServer
     {
-        private readonly NetConfig config;
+        private readonly NetConfig _config;
+        private readonly object _lock = new object();
 
         public NetServer(NetConfig config)
         {
-            this.config = config;
+            this._config = config;
         }
 
+        public async Task Start()
+        {
 
+        }
 
     }
 }
