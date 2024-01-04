@@ -1,12 +1,12 @@
 ﻿using NetLinkCore.Common;
 
-namespace NetLinkCore.Client
+namespace NetLinkCore.Server
 {
-    public class NetClient
+    public class NetServer
     {
         private readonly NetConfig config;
 
-        public NetClient(NetConfig config)
+        public NetServer(NetConfig config)
         {
             this.config = config;
         }
