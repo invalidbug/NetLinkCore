@@ -12,6 +12,6 @@ namespace NetLinkCore.Common
     public interface INetConnection
     {
         // sends a packet to the destination
-        public Task SendPacket(INetPacket packet);
+        public Task SendPacketAsync(INetPacket packet);
     }
 }

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetLinkCore.Client", "NetLi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetLinkCore.Common", "NetLinkCore.Common\NetLinkCore.Common.csproj", "{DD5F75D0-0461-496F-9959-98B6440C7825}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetLinkCore.Tests", "NetLinkCore.Tests\NetLinkCore.Tests.csproj", "{EC3EB0BE-340B-464A-95F7-3DA4C8CA331B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{DD5F75D0-0461-496F-9959-98B6440C7825}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD5F75D0-0461-496F-9959-98B6440C7825}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD5F75D0-0461-496F-9959-98B6440C7825}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC3EB0BE-340B-464A-95F7-3DA4C8CA331B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC3EB0BE-340B-464A-95F7-3DA4C8CA331B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC3EB0BE-340B-464A-95F7-3DA4C8CA331B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC3EB0BE-340B-464A-95F7-3DA4C8CA331B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
