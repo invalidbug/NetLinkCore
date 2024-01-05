@@ -22,9 +22,9 @@ namespace NetLinkCore.Server
 
     public class NetPeer : INetConnection
     {
+        public string PeerId { get; set; } = Guid.NewGuid().ToString();
         private readonly NetServer _server;
         private readonly TcpClient _client;
-
         public NetPeer(NetServer server, TcpClient client)
         {
             _server = server;

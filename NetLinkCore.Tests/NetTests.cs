@@ -70,7 +70,7 @@ namespace NetLinkCore.Tests
             Assert.True(server.ConnectionCount == 10,
                 $"Server does not have 10 clients, it has {server.ConnectionCount}!");
 
-            // dispose all of them
+            // manually dispose all of the connections
             foreach (var client in clients)
                 client.Dispose();
         }
@@ -84,6 +84,7 @@ namespace NetLinkCore.Tests
 
             // create the server
             using var server = CreateTestServer(cfg);
+
             // stop the server
             server.Stop();
             // start again
@@ -109,7 +110,7 @@ namespace NetLinkCore.Tests
         {
             var server = new NetServer(cfg);
             server.Start();
-            Debug.Assert(server.IsRunning());
+            Assert.True(server.IsRunning());
             return server;
         }
 

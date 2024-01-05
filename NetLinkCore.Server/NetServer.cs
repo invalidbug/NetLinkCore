@@ -99,6 +99,10 @@ namespace NetLinkCore.Server
             {
                 RequireRunning();
 
+                // convert the packet into a byte array
+                var packetBytes = SerializePacketToBytes(packet);
+
+
                 // todo
 
             }
