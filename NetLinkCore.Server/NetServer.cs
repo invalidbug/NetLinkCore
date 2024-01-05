@@ -56,9 +56,6 @@ namespace NetLinkCore.Server
 
                 // create a new background task to listen to new clients
                 _ = ListenForClients(_listenCancellationToken!.Token);
-
-                // make sure we're actually running
-                Debug.Assert(IsRunning());
             }
         }
 

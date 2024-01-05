@@ -8,6 +8,7 @@ using NetLinkCore;
 using NetLinkCore.Client;
 using NetLinkCore.Common;
 using NetLinkCore.Server;
+using Xunit;
 
 namespace NetLinkCore.Tests
 {
@@ -32,12 +33,69 @@ namespace NetLinkCore.Tests
             using var client = CreateTestClient(cfg);
 
             // make sure theres no connections already
-            Debug.Assert(server.ConnectionCount == 0);
+            Assert.True(server.ConnectionCount == 0);
 
             // can it connect?
             await client.ConnectAsync();
-            Debug.Assert(client.IsConnected());
-            Debug.Assert(server.ConnectionCount == 1);
+            Assert.True(client.IsConnected());
+            Assert.True(server.ConnectionCount == 1);
+        }
+
+        // can it handle multiple clients?
+        [Fact]
+        public async Task MultipleConnectionTest()
+        {
+            // create our config
+            var cfg = CreateTestConfig();
+
+            // create the server
+            using var server = CreateTestServer(cfg);
+
+            // create a bunch of clients
+            var clients = new List<NetClient>();
+            for (int i = 0; i < 10; i++)
+            {
+                var client = CreateTestClient(cfg);
+                await client.ConnectAsync();
+                clients.Add(client);
+                Assert.True(client.IsConnected(), "");
+            }
+
+            // it may take a bit for all the connections to connect fully.
+            // todo: This shouldn't be the case, we should wait for a complete handshake
+            //       before returning from ConnectAsync()
+            await Task.Delay(100);
+
+            // did they all connect?
+            Assert.True(server.ConnectionCount == 10,
+                $"Server does not have 10 clients, it has {server.ConnectionCount}!");
+
+            // dispose all of them
+            foreach (var client in clients)
+                client.Dispose();
+        }
+
+        // can we start and stop the server?
+        [Fact]
+        public async Task StartAndStopAndStartTest()
+        {
+            // create our config
+            var cfg = CreateTestConfig();
+
+            // create the server
+            using var server = CreateTestServer(cfg);
+            // stop the server
+            server.Stop();
+            // start again
+            server.Start();
+
+            // try to connect to the server
+            using var client = CreateTestClient(cfg);
+            await client.ConnectAsync();
+
+            Assert.True(server.IsRunning(), "Server failed to start and stop then start again");
+            Assert.True(server.ConnectionCount == 1,
+                $"Server did not have 1 connection, it had {server.ConnectionCount}");
         }
 
         private NetConfig CreateTestConfig()
