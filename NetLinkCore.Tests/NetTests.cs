@@ -36,7 +36,7 @@ namespace NetLinkCore.Tests
 
             // can it connect?
             await client.ConnectAsync();
-            Debug.Assert(client.Connected());
+            Debug.Assert(client.IsConnected());
             Debug.Assert(server.ConnectionCount == 1);
         }
 

@@ -2,16 +2,17 @@
 using System.Net;
 using System.Net.Sockets;
 using NetLinkCore.Common;
+using NetLinkCore.Common.Packet;
 using NetLinkCore.Server.Exceptions;
 
 namespace NetLinkCore.Server
 {
-    public class NetServer : IDisposable
+    public class NetServer : NetPacketProcessor, IDisposable
     {
         public int ConnectionCount { get; set; } = 0;
 
         private readonly NetConfig _config;
-        private readonly object _lock = new object();
+        private readonly object _serverLock = new object();
         private TcpListener? _listener;
         private CancellationTokenSource? _listenCancellationToken;
 
@@ -31,40 +32,55 @@ namespace NetLinkCore.Server
             StopInternal();
         }
 
+        #region Start_Stop
+
         public void Start()
         {
-            // check if were already running
-            if (IsRunning())
-                throw new AlreadyStartedException();
+            lock (_serverLock)
+            {
+                // check if were already running
+                if (IsRunning())
+                    throw new AlreadyStartedException();
 
-            // if the listener exists (but IsRunning() failed meaning the socket isn't
-            // bound) we need to stop first
-            if (_listener != null)
-                Stop();
+                // if the listener exists (but IsRunning() failed meaning the socket isn't
+                // bound) we need to stop first
+                if (_listener != null)
+                    Stop();
 
-            // create a new listener
-            _listener = new TcpListener(IPAddress.Parse(_config.Ip), _config.Port);
-            _listener.Start();
+                // create a new listener
+                _listener = new TcpListener(IPAddress.Parse(_config.Ip), _config.Port);
+                _listener.Start();
 
-            // create a cancelation token for the listener
-            _listenCancellationToken = new CancellationTokenSource();
+                // create a cancelation token for the listener
+                _listenCancellationToken = new CancellationTokenSource();
 
-            // create a new background task to listen to new clients
-            _ = ListenForClients(_listenCancellationToken!.Token);
+                // create a new background task to listen to new clients
+                _ = ListenForClients(_listenCancellationToken!.Token);
 
-            // make sure we're actually running
-            Debug.Assert(IsRunning());
+                // make sure we're actually running
+                Debug.Assert(IsRunning());
+            }
         }
 
+        /// <summary>
+        /// Stops the server from running
+        /// </summary>
         public void Stop()
         {
-            if (!IsRunning())
-                throw new NeverStartedException();
+            lock (_serverLock)
+            {
+                // make sure we're actually running
+                RequireRunning();
 
-            // internal may want to stop without knowing if we started
-            StopInternal();
+                // actual stop call
+                StopInternal();
+            }
         }
 
+        /// <summary>
+        /// Stops the server from running, doesnt verify that we're running however
+        /// This is used by Dispose
+        /// </summary>
         private void StopInternal()
         {
             // stop the background task
@@ -76,25 +92,63 @@ namespace NetLinkCore.Server
             _listener = null;
         }
 
+        #endregion Start_Stop
+
+        #region Communication
+
+        public async Task<bool> SendPacketToPeer(NetPeer peer, INetPacket packet)
+        {
+            lock (_serverLock)
+            {
+                RequireRunning();
+
+                // todo
+
+            }
+
+            return true;
+        }
+
+        public async Task BroadcastPacket(INetPacket packet)
+        {
+            lock (_serverLock)
+            {
+
+                RequireRunning();
+
+            }
+
+            // todo
+        }
+
         private async Task ListenForClients(CancellationToken token)
         {
             while (IsRunning() && !token.IsCancellationRequested)
             {
-                // Is running checks null
-                var newPeer = await _listener!.AcceptTcpClientAsync(token);
+                // IsRunning() checks null
+                var newPeerTcp = await _listener!.AcceptTcpClientAsync(token);
 
-                lock (_lock)
+                // create a new peer
+                var peer = new NetPeer(this, newPeerTcp);
+
+
+                lock (_serverLock)
                 {
+
+
+
                     // increment connection count
                     ConnectionCount += 1;
                 }
             }
         }
 
+        private void RequireRunning()
+        {
+            if (!IsRunning())
+                throw new NeverStartedException();
+        }
 
-
-
-
-
+        #endregion Communication
     }
 }

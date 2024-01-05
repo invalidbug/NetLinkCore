@@ -1,10 +1,12 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using NetLinkCore.Client.Exceptions;
 using NetLinkCore.Common;
+using NetLinkCore.Common.Packet;
 
 namespace NetLinkCore.Client
 {
-    public class NetClient : INetConnection, IDisposable
+    public class NetClient : NetPacketProcessor, INetConnection, IDisposable
     {
         private readonly NetConfig _config;
         private readonly object _lock = new();
@@ -50,7 +52,7 @@ namespace NetLinkCore.Client
             }
         }
 
-        public bool Connected()
+        public bool IsConnected()
         {
             return _client.Connected;
         }
@@ -61,6 +63,9 @@ namespace NetLinkCore.Client
         /// <param name="packet">The packet we'd want to send</param>
         public async Task SendPacketAsync(INetPacket packet)
         {
+            if (!IsConnected())
+                throw new NotConnectedException();
+
             // todo:
 
 
